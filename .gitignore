@@ -1,0 +1,40 @@
+# -----------------------------------------------------------------------------
+# TERRAFORM CORE
+# -----------------------------------------------------------------------------
+# Ignora la cartella di inizializzazione che contiene i binari dei provider (es. LXD)
+**/.terraform/*
+
+# Ignora i file di stato di Terraform (CRITICO)
+# Il tfstate contiene la mappatura dell'infrastruttura e le variabili in chiaro.
+*.tfstate
+*.tfstate.*
+
+# Ignora i file di log in caso di crash
+crash.log
+crash.*.log
+
+# Ignora il file di lock delle dipendenze (opzionale, ma spesso escluso in progetti singoli)
+.terraform.lock.hcl
+
+# -----------------------------------------------------------------------------
+# CREDENZIALI E VARIABILI DI PROGETTO (INTEGRAZIONI)
+# -----------------------------------------------------------------------------
+# Esclude tutti i file .tfvars e .env per evitare leak di password e token
+*.tfvars
+*.tfvars.json
+terraform.tfvars
+.env
+
+# Ignora le chiavi SSH locali se accidentalmente generate o copiate nella cartella
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# -----------------------------------------------------------------------------
+# OS & EDITOR (VS Code, ecc.)
+# -----------------------------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
