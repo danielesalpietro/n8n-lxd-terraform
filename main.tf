@@ -48,6 +48,16 @@ resource "lxd_instance" "n8n_node" {
     }
   }
 
+  # Proxy per esporre n8n sull'IP dell'host
+  device {
+    name = "n8n-proxy"
+    type = "proxy"
+    properties = {
+      listen  = "tcp:0.0.0.0:5678"
+      connect = "tcp:127.0.0.1:5678"
+    }
+  }
+
   # Iniezione del cloud-init
   config = {
     "user.user-data" = data.template_file.cloud_init.rendered
