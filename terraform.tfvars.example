@@ -1,0 +1,45 @@
+# ==============================================================================
+# ESEMPIO DI CONFIGURAZIONE TERRAFORM
+# ==============================================================================
+# ISTRUZIONI:
+# 1. Copia questo file e rinominalo in "terraform.tfvars"
+#    (es. cp terraform.tfvars.example terraform.tfvars)
+# 2. Sostituisci i valori di esempio con le tue credenziali e configurazioni reali.
+# 
+# NOTA: Il file "terraform.tfvars" è escluso dal versioning tramite .gitignore 
+# per prevenire il leak di credenziali. NON committare mai le password reali.
+
+# ------------------------------------------------------------------------------
+# 1. Configurazione del Container LXC (MicroCloud)
+# ------------------------------------------------------------------------------
+
+# Il nome host che verrà assegnato alla macchina virtuale/container
+container_name = "n8n-server"
+
+# Limiti di calcolo (es. "2", "4" per le vCPU)
+cpu_limits     = "4"
+
+# Limiti di memoria (es. "4GB", "8GB")
+ram_limits     = "8GB"
+
+# Nome del pool di storage LXD da utilizzare (se usi Ceph, inserisci il nome corretto)
+storage_pool   = "default" 
+
+# ------------------------------------------------------------------------------
+# 2. Configurazione del Database (PostgreSQL)
+# ------------------------------------------------------------------------------
+
+# L'utente del database verrà generato dinamicamente durante il Cloud-Init
+db_user        = "n8n_user"
+db_password    = "INSERISCI_QUI_LA_PASSWORD_DEL_DB"
+
+# ------------------------------------------------------------------------------
+# 3. Configurazione dell'Applicazione (n8n)
+# ------------------------------------------------------------------------------
+
+# Credenziali di accesso per la Web UI di n8n (Basic Auth)
+n8n_user       = "admin"
+n8n_password   = "INSERISCI_QUI_LA_PASSWORD_DI_N8N"
+
+# Fuso orario per garantire che i nodi "Cron" o "Schedule" si attivino all'ora giusta
+timezone       = "Europe/Rome"
