@@ -27,6 +27,7 @@ write_files:
             DB_POSTGRESDB_PORT: "5432",
             DB_POSTGRESDB_USER: "${db_user}",
             DB_POSTGRESDB_PASSWORD: "${db_password}",
+            N8N_SECURE_COOKIE: "false",
             N8N_BASIC_AUTH_ACTIVE: "true",
             N8N_BASIC_AUTH_USER: "${n8n_user}",
             N8N_BASIC_AUTH_PASSWORD: "${n8n_password}"
