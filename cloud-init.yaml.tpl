@@ -54,4 +54,4 @@ runcmd:
   # Avvia n8n tramite PM2 e abilita il riavvio automatico al boot
   - env PATH=$PATH:/usr/bin pm2 start /opt/n8n/ecosystem.config.js
   - env PATH=$PATH:/usr/bin pm2 save
-  - bash -c "env PATH=$PATH:/usr/bin pm2 startup systemd -u root --hp /root | tail -1 | bash"
+  - env PATH=$PATH:/usr/bin pm2 startup systemd -u root --hp /root
