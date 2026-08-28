@@ -12,6 +12,7 @@
   git pull --rebase origin claude/repo-status-mydlk3
   ```
 - **Leggi OBBLIGATORIAMENTE, per intero, `collaudo/logbook_fase5_compresso.md`** prima di fare qualunque cosa.
+- **Attenzione ai clone multipli:** opera sul clone che sta fisicamente sull'host MicroCloud (serve il socket LXD locale) — verifica il percorso esatto nel logbook compresso.
 - Sub-issue GitHub di questa fase: **#10**.
 - Crea il logbook esteso: `collaudo/logbook_fase6.md`.
 - Il riavvio dell'host MicroCloud è un'**azione impattante**: prima di eseguirlo, verifica con chi ti ha affidato la sessione che sia autorizzato in questo momento (potrebbero esserci altri carichi sull'host).

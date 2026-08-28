@@ -12,6 +12,7 @@
   git pull --rebase origin claude/repo-status-mydlk3
   ```
 - **Leggi OBBLIGATORIAMENTE, per intero, `collaudo/logbook_fase4_compresso.md`** prima di fare qualunque cosa. Da lì recupera se il container di test è ancora acceso e il suo nome/IP.
+- **Attenzione ai clone multipli:** opera sul clone che sta fisicamente sull'host MicroCloud (serve il socket LXD locale per `terraform output`/`lxc exec`) — verifica il percorso esatto nel logbook compresso.
 - Sub-issue GitHub di questa fase: **#9**.
 - Crea il logbook esteso: `collaudo/logbook_fase5.md`.
 

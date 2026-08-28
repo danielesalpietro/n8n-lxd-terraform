@@ -12,6 +12,7 @@
   git pull --rebase origin claude/repo-status-mydlk3
   ```
 - **Leggi OBBLIGATORIAMENTE, per intero, `collaudo/logbook_fase2_compresso.md`** prima di fare qualunque cosa.
+- **Attenzione ai clone multipli:** possono esistere più clone del repository (es. uno Windows usato per git/GitHub, uno sull'host Linux MicroCloud). I comandi Terraform di questa fase in poi (`plan`, `apply`, `destroy`) DEVONO girare sul clone che sta fisicamente sull'host MicroCloud (il provider LXD richiede il socket locale) — verifica nel logbook compresso della Fase 2 il percorso esatto usato lì, e usa lo stesso `terraform.tfvars` già presente in quel clone (non ricrearlo se già c'è).
 - Sub-issue GitHub di questa fase: **#7**.
 - Crea il logbook esteso: `collaudo/logbook_fase3.md`.
 

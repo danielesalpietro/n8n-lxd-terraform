@@ -12,6 +12,7 @@
   git pull --rebase origin claude/repo-status-mydlk3
   ```
 - **Leggi OBBLIGATORIAMENTE, per intero, `collaudo/logbook_fase3_compresso.md`** prima di fare qualunque cosa.
+- **Attenzione ai clone multipli:** i comandi Terraform/`lxc` devono girare sul clone che sta fisicamente sull'host MicroCloud (il provider LXD richiede il socket locale) — verifica nel logbook compresso il percorso esatto e usa il `terraform.tfvars` già presente lì.
 - Sub-issue GitHub di questa fase: **#8**.
 - Crea il logbook esteso: `collaudo/logbook_fase4.md`.
 - **Questa è la prima fase che crea davvero infrastruttura.** Procedi con cautela: se qualcosa va storto a metà provisioning, non lasciare il container "a metà" — annota lo stato esatto nel logbook esteso prima di intervenire manualmente, e preferisci correggere il codice sorgente (cloud-init/Terraform) piuttosto che patchare a mano dentro il container (un fix manuale non sopravvive a un nuovo `apply` e non aiuta la fase successiva).
