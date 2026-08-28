@@ -2,7 +2,9 @@
 
 ## Contesto
 
-Il progetto (`main.tf`, `variables.tf`, `cloud-init.yaml.tpl`) è stato **scritto ma mai eseguito**. Non esiste alcuna evidenza che `terraform apply` funzioni, che il cloud-init si completi senza errori o che n8n sia effettivamente raggiungibile a fine provisioning.
+Il progetto (`main.tf`, `variables.tf`, `cloud-init.yaml.tpl`) non era mai stato collaudato in modo formale prima di questo processo. Non esisteva alcuna evidenza *documentata* che `terraform apply` funzionasse, che il cloud-init si completasse senza errori o che n8n fosse effettivamente raggiungibile a fine provisioning.
+
+> **Aggiornamento (28/08/2026, durante la Fase 0):** sull'host è stato trovato un container `n8n-server` già funzionante da ~3 mesi, con uno stack coerente con questo progetto (probabile test manuale precedente, non documentato). Decisione dell'owner: il container esistente **non va toccato** (è in uso reale); il collaudo Fase 1 procede creando un **container di test separato** con un `container_name` diverso (es. `n8n-collaudo-f1`). Dettagli in `collaudo/handoff_fase0.md`/`handoff_fase1.md` e nel commento sulla sub-issue #4.
 
 Questo documento è l'handoff per la sessione che avrà **accesso SSH diretto all'host MicroCloud/LXD** ed eseguirà lo sviluppo iterativo e il collaudo (Fase 1) della procedura. Segui le fasi in ordine: ogni fase presuppone che la precedente sia stata superata.
 

@@ -4,7 +4,8 @@
 
 ## 0. Prima di iniziare (obbligatorio)
 
-- Contesto progetto: repository `n8n-lxd-terraform` — Terraform + cloud-init per il deployment automatico di n8n su un container LXD/LXC in un host MicroCloud. Il codice è stato scritto ma **mai eseguito**: questa è la primissima fase di collaudo. Per la visione d'insieme completa vedi `README.md` e `handoff_test_and_dev.md` (non obbligatorio rileggerlo tutto: questo file contiene già ciò che serve per la Fase 0).
+- Contesto progetto: repository `n8n-lxd-terraform` — Terraform + cloud-init per il deployment automatico di n8n su un container LXD/LXC in un host MicroCloud. Il codice non è mai stato collaudato in modo formale/documentato: questa è la primissima fase di collaudo strutturato. Per la visione d'insieme completa vedi `README.md` e `handoff_test_and_dev.md` (non obbligatorio rileggerlo tutto: questo file contiene già ciò che serve per la Fase 0).
+- **Nota (emersa durante la prima esecuzione di questa fase, 28/08/2026):** sull'host può esistere già un container `n8n-server` funzionante, non collegato a questo collaudo (deployment manuale precedente, ~3 mesi prima). **Non va mai toccato, modificato o distrutto.** Il container di questa fase e delle successive dovrà avere un nome diverso e inequivocabile (es. `n8n-collaudo-f1`), scelto in Fase 1. Vedi il commento del supervisore sulla sub-issue #4 per il dettaglio.
 - Branch di lavoro condiviso da tutte le fasi:
   ```bash
   git fetch origin claude/repo-status-mydlk3
@@ -44,6 +45,7 @@ Verifica anche l'accesso internet in uscita dall'host (necessario a `terraform i
 - [ ] `terraform version` eseguito e annotato (richiesto provider `terraform-lxd/lxd ~> 2.0`)
 - [ ] Accesso internet in uscita dall'host verificato
 - [ ] Repository clonato e branch `claude/repo-status-mydlk3` in checkout
+- [ ] `lxc list` ispezionato per container pre-esistenti che potrebbero collidere per nome con quello del collaudo (in particolare `n8n-server`, noto e da NON toccare): annotarne nome, stato e data di creazione nel logbook, senza modificarli
 
 ## 4. Criterio di uscita
 

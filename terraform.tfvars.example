@@ -14,6 +14,9 @@
 # ------------------------------------------------------------------------------
 
 # Il nome host che verrà assegnato alla macchina virtuale/container
+# ATTENZIONE: verifica sempre con `lxc list` che non esista già un container
+# con questo nome sull'host prima di eseguire terraform apply (vedi
+# collaudo/handoff_fase1.md per il caso emerso durante il collaudo Fase 1).
 container_name = "n8n-server"
 
 # Limiti di calcolo (es. "2", "4" per le vCPU)
