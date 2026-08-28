@@ -15,6 +15,7 @@
 - Sub-issue GitHub di questa fase: **#6**.
 - Crea il logbook esteso: `collaudo/logbook_fase2.md`.
 - Nota: due bug HCL noti sono già stati corretti in questo branch prima dell'avvio del collaudo (variabili sensibili con sintassi a virgola non valida; `data "template_file"` deprecato sostituito con `templatefile()`). Questa fase deve comunque rivalidare tutto da zero, non dare per scontato che non ce ne siano altri.
+- **`terraform.tfvars` non è versionato** (per design, contiene credenziali): controlla prima di tutto se esiste già nella directory di lavoro (stesso host/clone della Fase 1). Se c'è, riusalo così com'è (contiene già `container_name = "n8n-collaudo-f1"`, `storage_pool = "remote"` e le password generate in Fase 1 — vedi `collaudo/logbook_fase1_compresso.md`). Se manca (sessione su una macchina/clone diversa), ricrealo da `terraform.tfvars.example` seguendo esattamente i valori riportati nel logbook compresso della Fase 1, rigenerando solo le password.
 
 ## 1. Obiettivo della fase
 
