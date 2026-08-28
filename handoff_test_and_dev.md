@@ -10,6 +10,24 @@ Aggiorna il **Registro Problemi** (in fondo al documento) ad ogni anomalia risco
 
 ---
 
+## Processo multi-sessione: una sessione per fase, logbook, supervisione
+
+Questo collaudo non è eseguito da un'unica sessione continuativa: **ogni fase (0–7) è affidata a una sessione dedicata separata**, con accesso SSH locale all'host MicroCloud. Le regole operative vincolanti per questo processo sono definite in **`CLAUDE.md`** (governance: sessioni locali, `/remote-control`, comunicazione via trigger, ruolo del supervisore) e non vanno modificate senza approvazione dell'owner.
+
+Struttura di riferimento in `collaudo/`:
+
+- `collaudo/handoff_faseN.md` (N=0..7) — istruzioni operative complete e autosufficienti per la sessione di quella fase: obiettivo, procedura, checklist (identica alla sub-issue GitHub collegata), criterio di uscita, istruzioni di chiusura.
+- `collaudo/prompts_avvio_sessioni.md` — prompt di onboarding pronti da inviare a ogni nuova sessione operativa, con l'elenco esatto di cosa leggere prima di agire.
+- `collaudo/logbook_template_compresso.md` — template fisso per il logbook compresso di fine fase.
+- `collaudo/logbook_faseN.md` — logbook esteso (testo libero, append-only) prodotto durante il lavoro della fase N: non è lettura obbligatoria per le fasi successive.
+- `collaudo/logbook_faseN_compresso.md` — prodotto obbligatoriamente a fine sessione della fase N, secondo il template. **È l'unico documento che la sessione della fase N+1 deve leggere obbligatoriamente** per l'onboarding: è pensato per essere autosufficiente (include il carry-over ancora valido delle fasi precedenti), evitando che la quantità di contesto da leggere cresca ad ogni fase.
+
+Ogni fase è tracciata da una sub-issue GitHub dedicata, figlia della issue madre **#3 "Handoff Test & Dev"**: #4 (Fase 0) … #11 (Fase 7). La checklist della issue madre è la somma di quelle delle sub-issue.
+
+Una sessione di **supervisione** (separata dalle sessioni operative, non necessita di accesso SSH all'host) monitora l'avanzamento: verifica che ogni sub-issue sia chiusa con il relativo logbook compresso pubblicato e coerente, comunica con le sessioni operative tramite trigger/Routine (mai messaggistica ad-hoc), e resta l'unica responsabile della chiusura finale della issue madre #3 secondo la Definition of Done in fondo a questo documento.
+
+---
+
 ## Ruoli e ambito
 
 - Ambiente target: host fisico/VM con **MicroCloud** (LXD + Ceph) già inizializzato e funzionante.
