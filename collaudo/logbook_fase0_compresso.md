@@ -3,7 +3,7 @@
 ## Stato finale
 - Esito: COMPLETATA CON RISERVE
 - Data/ora fine sessione (UTC): 2026-08-28 ~19:50
-- Sub-issue GitHub: #4 — stato: aperta (contiene l'anomalia del container `n8n-server` pre-esistente, tracciata per riferimento futuro; non è un blocco per l'uscita da questa fase)
+- Sub-issue GitHub: #4 — stato: chiusa (criterio di uscita soddisfatto: tutti i punti della checklist verificati; l'anomalia del container `n8n-server` è annotata come riserva ma non ne blocca la chiusura — tracciata per le fasi successive nella sezione "Problemi aperti" sotto)
 - Commit di riferimento (hash brevi) prodotti in questa sessione: (vedi commit di chiusura Fase 0, subito successivo a questo file)
 
 ## Configurazione rilevante per le fasi successive
