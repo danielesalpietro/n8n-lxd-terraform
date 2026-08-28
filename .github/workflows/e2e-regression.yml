@@ -1,0 +1,137 @@
+name: E2E Regression (LXD)
+
+# Test di non regressione end-to-end: replica su un runner effimero le Fasi
+# 0/2/3/4/5 del piano di collaudo descritto in handoff_test_and_dev.md.
+# Crea un vero container LXD locale (storage "dir", rete lxdbr0), applica
+# Terraform, attende il completamento del cloud-init e verifica che
+# PostgreSQL, Node.js e n8n (via PM2) siano effettivamente funzionanti.
+# Il container viene sempre distrutto a fine job.
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Apply + checklist funzionale
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CONTAINER_NAME: n8n-ci-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+          terraform_wrapper: false
+
+      # --- Fase 0: ambiente -----------------------------------------------
+      - name: Installa e inizializza LXD
+        run: |
+          sudo snap install lxd --channel=latest/stable || sudo snap refresh lxd --channel=latest/stable
+          sudo lxd waitready --timeout=60
+          sudo lxd init --auto --storage-backend=dir
+          sudo usermod -aG lxd "$USER"
+          sg lxd -c "lxc list"
+
+      - name: Verifica storage pool e rete di default
+        run: |
+          sg lxd -c "lxc storage list"
+          sg lxd -c "lxc network list"
+
+      # --- Fase 1/3: configurazione e plan ---------------------------------
+      - name: Genera terraform.tfvars di test
+        run: |
+          cat > terraform.tfvars <<EOF
+          container_name = "${CONTAINER_NAME}"
+          cpu_limits     = "2"
+          ram_limits     = "2GB"
+          storage_pool   = "default"
+
+          db_user        = "n8n_ci"
+          db_password    = "ci-test-password-not-real"
+
+          n8n_user       = "admin"
+          n8n_password   = "ci-test-password-not-real"
+
+          timezone       = "Europe/Rome"
+          EOF
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform plan
+        run: sg lxd -c "terraform plan -out=tfplan"
+
+      # --- Fase 4: apply e provisioning -------------------------------------
+      - name: Terraform apply
+        run: sg lxd -c "terraform apply -auto-approve tfplan"
+
+      - name: Attendi completamento cloud-init
+        run: |
+          sg lxd -c "lxc list"
+          for i in $(seq 1 30); do
+            if sg lxd -c "lxc exec ${CONTAINER_NAME} -- cloud-init status" | grep -q "status: done"; then
+              echo "cloud-init completato"
+              exit 0
+            fi
+            echo "attendo cloud-init... ($i/30)"
+            sleep 10
+          done
+          echo "::error::cloud-init non ha raggiunto lo stato 'done' entro il timeout"
+          exit 1
+
+      - name: Dump log cloud-init (sempre, per diagnosi)
+        if: always()
+        run: sg lxd -c "lxc exec ${CONTAINER_NAME} -- cat /var/log/cloud-init-output.log" || true
+
+      # --- Fase 5: checklist funzionale (sottoinsieme automatizzabile) -----
+      - name: Verifica PostgreSQL attivo
+        run: sg lxd -c "lxc exec ${CONTAINER_NAME} -- systemctl is-active postgresql"
+
+      - name: Verifica esistenza database e utente n8n
+        run: |
+          sg lxd -c "lxc exec ${CONTAINER_NAME} -- sudo -u postgres psql -lqt" | grep -qw n8n
+          sg lxd -c "lxc exec ${CONTAINER_NAME} -- sudo -u postgres psql -tAc \"SELECT 1 FROM pg_roles WHERE rolname='n8n_ci'\"" | grep -q 1
+
+      - name: Verifica processo n8n in PM2
+        run: |
+          sg lxd -c "lxc exec ${CONTAINER_NAME} -- pm2 jlist" | tee pm2.json
+          node -e '
+            const procs = JSON.parse(require("fs").readFileSync("pm2.json", "utf8"));
+            const n8n = procs.find(p => p.name === "n8n");
+            if (!n8n) { console.error("processo n8n non trovato in pm2"); process.exit(1); }
+            if (n8n.pm2_env.status !== "online") { console.error("n8n non online:", n8n.pm2_env.status); process.exit(1); }
+            console.log("n8n online in pm2, pid", n8n.pid);
+          '
+
+      - name: Verifica n8n risponde su HTTP
+        run: |
+          for i in $(seq 1 12); do
+            code=$(sg lxd -c "lxc exec ${CONTAINER_NAME} -- curl -s -o /dev/null -w '%{http_code}' http://localhost:5678" || echo "000")
+            echo "tentativo $i: HTTP $code"
+            if [ "$code" = "200" ] || [ "$code" = "401" ]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::n8n non risponde su :5678 entro il timeout"
+          exit 1
+
+      # --- Fase 7: cleanup (sempre, anche in caso di errore) ----------------
+      - name: Terraform destroy
+        if: always()
+        run: sg lxd -c "terraform destroy -auto-approve" || true

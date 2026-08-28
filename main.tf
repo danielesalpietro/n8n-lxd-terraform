@@ -14,18 +14,6 @@ provider "lxd" {
   accept_remote_certificate    = true
 }
 
-# Genera il file cloud-init iniettando le variabili sicure
-data "template_file" "cloud_init" {
-  template = file("${path.module}/cloud-init.yaml.tpl")
-  vars = {
-    db_user      = var.db_user
-    db_password  = var.db_password
-    n8n_user     = var.n8n_user
-    n8n_password = var.n8n_password
-    timezone     = var.timezone
-  }
-}
-
 # Creazione del Container LXC
 resource "lxd_instance" "n8n_node" {
   name      = var.container_name
@@ -48,9 +36,15 @@ resource "lxd_instance" "n8n_node" {
     }
   }
 
-  # Iniezione del cloud-init
+  # Iniezione del cloud-init (templatefile nativo: nessun provider esterno deprecato)
   config = {
-    "user.user-data" = data.template_file.cloud_init.rendered
+    "user.user-data" = templatefile("${path.module}/cloud-init.yaml.tpl", {
+      db_user      = var.db_user
+      db_password  = var.db_password
+      n8n_user     = var.n8n_user
+      n8n_password = var.n8n_password
+      timezone     = var.timezone
+    })
   }
 }
 
